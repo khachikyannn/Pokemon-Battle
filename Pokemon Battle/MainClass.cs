@@ -10,67 +10,139 @@ namespace Pokemon_Battle
 {
     internal class Heal : Ability
     {
+        bool active; 
+
         private int heal;
 
-        //public int Heal
-        //{
-        //    get
-        //    {
-        //        return heal;
-        //    }
-        //}
+        public override void Activate(Pokemon activator, Pokemon enemy)
+        {
+            active = true;
+        }
 
-        //public override void Activate(Pokemon activator, Pokemon enemy)
-        //{
-        //    activator.Health += heal;
-        //}
+        public override void Update(Pokemon activator, Pokemon enemy)
+        {
+            if (active)
+            {
+                activator.Health += heal;
+            }
+
+            active = false;
+        }
     }
+
+    internal class Poison : Ability
+    {
+        bool active;
+        private int poisonDamage;
+
+        public override void Activate(Pokemon activator, Pokemon enemy)
+        {
+            active = true;
+        }
+
+        public override void Update(Pokemon activator, Pokemon enemy)
+        {
+            if (active)
+            {
+                enemy.Health = enemy.Health - 30;
+            }
+
+            active = false;
+        }
+    }
+
+    internal class Dodge : Ability
+    {
+        bool active;
+
+        int damage;
+
+        public override void Activate(Pokemon activator, Pokemon enemy)
+        {
+            active = true;
+        }
+
+        public override int ModifyDamage(int damage, Pokemon activator, Pokemon enemy)
+        {
+            if(active)
+            {
+                damage = 0;
+            }
+
+            active = false;
+
+            return damage;
+        }
+    }
+
+    internal class Lightning : Ability
+    {
+        bool active;
+        int damage;
+
+        public override void Activate(Pokemon activator, Pokemon enemy)
+        {
+            active = true;
+        }
+
+        public override int ModifyDamage(int damage, Pokemon activator, Pokemon enemy)
+        {
+            if (active)
+            {
+                damage = 75; 
+            }
+
+            active = false;
+
+            return damage;
+        }
+    }
+
+    internal class AttackSkip : Ability
+    {
+        bool active;
+        
+        public override void Activate(Pokemon activator, Pokemon enemy)
+        {
+            active = true;
+        }
+
+        public override int ModifyDamage(int damage, Pokemon activator, Pokemon enemy)
+        {
+            if(active)
+            {
+                damage = 0;
+            }
+
+            active = false;
+
+            return damage;
+        }
+    }
+
+    //class StealHealth : Ability
+    //{
+    //    int HealthToSteal;
+    //    float percentageStolen;
+
+    //    public override void Activate(Pokemon activator, Pokemon enemy)
+    //    {
+    //        enemy.Health -= HealthToSteal;
+    //        activator.Health += (int)(HealthToSteal * percentageStolen);
+    //    }
+    //}
 
     internal abstract class Ability
     {
-        //public abstract void Activate(Pokemon activator, Pokemon enemy);
-        
-        //void DoStuff()
-        //{
-        //    Activate(null, null);
-        //}
-
-
-        #region old
-        //private int mainAttack;
-
-        //private int secondaryAttack;
-
-        //private int ultimate;
-
-        //public int MainAttack
-        //{
-        //    get
-        //    {
-        //        return mainAttack; 
-        //    }
-        //}
-
-        //public int SecondaryAttack
-        //{
-        //    get
-        //    {
-        //        return SecondaryAttack;
-        //    }
-        //}
-
-        //public bool Ultimate
-        //{
-        //    get
-        //    {
-        //        return mainAttack + secondaryAttack >= 100;
-        //    }
-        //}
-        #endregion
+        public abstract void Activate(Pokemon activator, Pokemon enemy);
+        public virtual void Update(Pokemon activator, Pokemon enemy) { }
+        public virtual int ModifyDamage(int damage, Pokemon activator, Pokemon enemy) { return damage; }
     }
 
     internal class Pokemon
     {
+        //bool stunned
+
         private string name;
 
         private int health;
@@ -139,7 +211,7 @@ namespace Pokemon_Battle
 
             string Tranquil = "Tranquil";
 
-            pokemonArray[9] = new Pokemon(Tranquil, 30);
+            pokemonArray[9] = new Pokemon(Tranquil, 300);
 
             string JigglyPuff = "JigglyPuff";
 
@@ -158,6 +230,24 @@ namespace Pokemon_Battle
 
     internal class Trainer
     {
+        //internal class Flee : Ability
+        //{
+        //    bool leaveGame;
+
+        //    public override void Activate(Pokemon activator, Pokemon enemy)
+        //    {
+        //        leaveGame = true;
+        //    }
+
+        //    public override void Update(Pokemon activator, Pokemon enemy)
+        //    {
+        //        if (leaveGame)
+        //        {
+        //            Console.WriteLine("Player Has Fled.");
+        //        }
+        //    }
+        //}
+
         private Pokemon[] allPokemon;
 
         public Trainer(Pokemon[] allPokemon)
