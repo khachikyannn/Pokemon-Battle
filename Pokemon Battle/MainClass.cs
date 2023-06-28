@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace Pokemon_Battle
@@ -13,6 +14,11 @@ namespace Pokemon_Battle
         bool active; 
 
         private int heal;
+
+        public Heal(int heal)
+        {
+            this.heal = heal;
+        }
 
         public override void Activate(Pokemon activator, Pokemon enemy)
         {
@@ -34,6 +40,7 @@ namespace Pokemon_Battle
     {
         bool active;
         private int poisonDamage;
+        int count = 0;
 
         public override void Activate(Pokemon activator, Pokemon enemy)
         {
@@ -42,10 +49,12 @@ namespace Pokemon_Battle
 
         public override void Update(Pokemon activator, Pokemon enemy)
         {
-            if (active)
+            if (active && count < 3)
             {
                 enemy.Health = enemy.Health - 30;
             }
+
+            count++;
 
             active = false;
         }
@@ -54,8 +63,6 @@ namespace Pokemon_Battle
     internal class Dodge : Ability
     {
         bool active;
-
-        int damage;
 
         public override void Activate(Pokemon activator, Pokemon enemy)
         {
@@ -77,60 +84,31 @@ namespace Pokemon_Battle
 
     internal class Lightning : Ability
     {
-        bool active;
         int damage;
 
-        public override void Activate(Pokemon activator, Pokemon enemy)
+        public Lightning(int damage)
         {
-            active = true;
+            this.damage = damage;
         }
 
-        public override int ModifyDamage(int damage, Pokemon activator, Pokemon enemy)
+        public override void Activate(Pokemon activator, Pokemon enemy)
         {
-            if (active)
-            {
-                damage = 75; 
-            }
-
-            active = false;
-
-            return damage;
+            enemy.Damage(activator, damage);            
         }
     }
 
-    internal class AttackSkip : Ability
-    {
-        bool active;
-        
+    internal class Stun : Ability
+    { 
         public override void Activate(Pokemon activator, Pokemon enemy)
         {
-            active = true;
+            enemy.IsStunned = true;
         }
 
-        public override int ModifyDamage(int damage, Pokemon activator, Pokemon enemy)
+        public override void Update(Pokemon activator, Pokemon enemy)
         {
-            if(active)
-            {
-                damage = 0;
-            }
-
-            active = false;
-
-            return damage;
+            enemy.IsStunned = false;
         }
     }
-
-    //class StealHealth : Ability
-    //{
-    //    int HealthToSteal;
-    //    float percentageStolen;
-
-    //    public override void Activate(Pokemon activator, Pokemon enemy)
-    //    {
-    //        enemy.Health -= HealthToSteal;
-    //        activator.Health += (int)(HealthToSteal * percentageStolen);
-    //    }
-    //}
 
     internal abstract class Ability
     {
@@ -141,11 +119,23 @@ namespace Pokemon_Battle
 
     internal class Pokemon
     {
-        //bool stunned
-
         private string name;
 
         private int health;
+
+        public bool IsStunned = false;
+
+        public Ability[] pokemonAbilities;
+
+        public void Damage(Pokemon enemy, int damage)
+        {
+            for (int i = 0; i < pokemonAbilities.Length; i++)
+            {
+                damage = pokemonAbilities[i].ModifyDamage(damage, this, enemy);
+            }
+
+            health -= damage;
+        }
 
         public string Name
         {
@@ -169,84 +159,64 @@ namespace Pokemon_Battle
             }
         }
 
-        public Pokemon[] PokemonList()
-        {
-            Pokemon[] pokemonArray = new Pokemon[10];
-
-            string Mew = "Mew";
-
-            pokemonArray[0] = new Pokemon(Mew, 300);
-
-            string Goomy = "Goomy";
-
-            pokemonArray[1] = new Pokemon(Goomy, 300);
-
-            string Paras = "Paras";
-
-            pokemonArray[2] = new Pokemon(Paras, 300);
-
-            string Skitty = "Skitty";
-
-            pokemonArray[3] = new Pokemon(Skitty, 300);
-
-            string Pikachu = "Pikachu";
-
-            pokemonArray[4] = new Pokemon(Pikachu, 300);
-
-            string Lechonk = "Lechonk";
-
-            pokemonArray[5] = new Pokemon(Lechonk, 300);
-
-            string Breloom = "BreLoom";
-
-            pokemonArray[6] = new Pokemon(Breloom, 300);
-
-            string Grookey = "Grookey";
-
-            pokemonArray[7] = new Pokemon(Grookey, 300);
-
-            string Salandit = "Salandit";
-
-            pokemonArray[8] = new Pokemon(Salandit, 300);
-
-            string Tranquil = "Tranquil";
-
-            pokemonArray[9] = new Pokemon(Tranquil, 300);
-
-            string JigglyPuff = "JigglyPuff";
-
-            pokemonArray[10] = new Pokemon(JigglyPuff, 300);
-
-            return pokemonArray;
-        }
-
-        public Pokemon(string name, int health)
+        public Pokemon(string name, int health, params Ability[] pokemonAbilities)
         {
             this.name = name;
 
             this.health = health;
+
+            this.pokemonAbilities = pokemonAbilities;
+        }
+
+        public Pokemon[] PokemonList()
+        {
+            Pokemon[] pokemonArray = new Pokemon[10];
+
+            pokemonArray[0] = new Pokemon("Mew", 300, new Heal(50), new Lightning(75), new Dodge());
+
+            pokemonArray[1] = new Pokemon("Goomy", 300, new Lightning(75), new Poison(), new Dodge());
+
+            pokemonArray[2] = new Pokemon("Paras", 300, new Heal(50), new Lightning(100), new Dodge());
+
+            pokemonArray[3] = new Pokemon("Skitty", 300);
+
+            pokemonArray[4] = new Pokemon("Pikachu", 300);
+
+            pokemonArray[5] = new Pokemon("Lechonk", 300);
+
+            pokemonArray[6] = new Pokemon("Breloom", 300);
+
+            pokemonArray[7] = new Pokemon("Grookey", 300);
+
+            pokemonArray[8] = new Pokemon("Salandit", 300);
+
+            pokemonArray[9] = new Pokemon("Tranquil", 300);
+
+            pokemonArray[10] = new Pokemon("JigglyPuff", 300);
+
+            return pokemonArray;
         }
     }
 
     internal class Trainer
     {
-        //internal class Flee : Ability
-        //{
-        //    bool leaveGame;
+        internal class Flee : Ability
+        {
+            bool leaveGame;
 
-        //    public override void Activate(Pokemon activator, Pokemon enemy)
-        //    {
-        //        leaveGame = true;
-        //    }
+            public override void Activate(Pokemon activator, Pokemon enemy)
+            {
+                leaveGame = true;
+            }
 
-        //    public override void Update(Pokemon activator, Pokemon enemy)
-        //    {
-        //        if (leaveGame)
-        //        {
-        //            Console.WriteLine("Player Has Fled.");
-        //        }
-        //    }
-        //}
+            public override void Update(Pokemon activator, Pokemon enemy)
+            {
+                if (leaveGame)
+                {
+                    Console.WriteLine("Player Has Fled.");
+                }
+            }
+        }
 
         private Pokemon[] allPokemon;
 
