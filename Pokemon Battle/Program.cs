@@ -1,43 +1,96 @@
-﻿namespace Pokemon_Battle
+﻿using System.Security.Cryptography.X509Certificates;
+
+namespace Pokemon_Battle
 {
     internal class Program
     {
-        public void DisplayPokemon()
+        static void MakePokemons()
         {
-            Pokemon[] myPokemon = PokemonList();////////////////////////////////////FIX
+            pokemonArray[0] = new Pokemon("Mew", 300, new Heal(50), new Lightning(75), new Dodge());
 
-            for (int i = 0; i < myPokemon.Length; i++)
+            pokemonArray[1] = new Pokemon("Goomy", 300, new Lightning(75), new Poison(), new Dodge());
+
+            pokemonArray[2] = new Pokemon("Paras", 300, new Heal(50), new Lightning(100), new Dodge());
+
+            pokemonArray[3] = new Pokemon("Skitty", 300);
+
+            pokemonArray[4] = new Pokemon("Pikachu", 300);
+
+            pokemonArray[5] = new Pokemon("Lechonk", 300);
+
+            pokemonArray[6] = new Pokemon("Breloom", 300);
+
+            pokemonArray[7] = new Pokemon("Grookey", 300);
+
+            pokemonArray[8] = new Pokemon("Salandit", 300);
+
+            pokemonArray[9] = new Pokemon("Tranquil", 300);
+
+            pokemonArray[10] = new Pokemon("JigglyPuff", 300);
+
+        }
+
+        public static Ability[] attacks;
+
+        public static int DisplayPokemon()
+        {
+            int pickedPokemon = 0;
+
+            for (int i = 0; i < pokemonArray.Length; i++)
             {
-                Console.WriteLine($"Available Pokemon: {PokemonList[i]}.");
+                Console.WriteLine($"Available Pokemon: {pokemonArray[i]}.");
+
+                pickedPokemon = i;
+            }
+
+            return pickedPokemon;
+        }
+
+        public static void DisplayAttacks()
+        {
+            for(int i = 0; i < pokemonArray.Length; i++)
+            {
+                Console.WriteLine($"Available Attacks: {attacks}");
             }
         }
 
-        static void Main()
-        {
-            //////https://sharplab.io/#v2:C4LgTgrgdgNAJiA1AHwAICYCMBYAUHjAAgEEoBLAWwEMAbQ+wvAb3rwcNQGZCA3MsYBFodMABhLlqNACoBPAA4BTNgyYr2DAOaLgjXBvZr9Bg6gDshAETQA1lAD2AdyiWA3A3UGAvp5/H6XIRkULrE2q6egahihAByVBSKEf567IGklLQAFMG6VNowIuJQCYoAlJ5GJiTahAC8hPlJnuzxifWEJYnJ7H7snpHcfAJCdKgALIQACmC5WRUpVSbRAJxZACSWTBlSckpenaVwhExtil6FYYrH29pelmU9DH5+BOiEAMJUuiASmTTMfopQIfexQADO9hoilBNHsYEIADEIGBYfDkoNCPYeIowLM4Ioin9dgpCZUWlodBT6EtqhwLJsmMjUVD4QcvsA3NTCH1npiOTkQo0CkSuopCqCIVCYayEQAzFFosALaq/ABGVHBhKyTUKYpVqm5zKVHQVLLhYCe9FeKQA9LbAtjcfjCRNprMQvNPPbaRp7asNpYOYdEjczhcatcTlcI44yMAABYnY2yg5mh5Wwj2m02t6fZiRdDoSp0gzcnbCNX2NUdKCKRyfb5ZMSFSyIuH2OXBTTAMGEACSg8sErBkOhSoAdABxMBUWSPblZLIcspVtVlCcpi0dSVjmUWicATUUNDhjgxKXYa4nMzmC8vHgfARiVA614rMlJmaB1V83LwXhAA=
+        public static Pokemon[] pokemonArray = new Pokemon[30];
 
+        static void Main()
+        { 
             string playAgain = "";
 
+            MakePokemons();
+            
             Pokemon[] PokemonTrainers;
+
+            //Each "player" gets a pokemon (store that pokemon)
+            //Print out the abilities they have
+            //The person will choose the attack or ability
+            //Then use that ability on the pokemon against the enemy
 
             while (playAgain == "yes")
             {
                 Console.WriteLine("Pick Your First Pokemon");
-                //display pokemon
+                int indexFirstPokemon = DisplayPokemon();
                 string firstPokemonChoice = Console.ReadLine();
 
                 Console.WriteLine("Pick Your Second Pokemon");
-                // display pokemon w/o first choice
+                int indexSecondPokemon = DisplayPokemon();
                 string secondPokemonChoice = Console.ReadLine();
 
                 Console.WriteLine("Pick Your Type Of Attack For First Pokemon");
-                // display attack choices 
+                DisplayAttacks();
                 string attackPokemonChoice = Console.ReadLine();
+                int mainAttackChoice = int.Parse(attackPokemonChoice);
 
                 Console.WriteLine("Pick Your Type Of Attack For Second Pokemon");
-                // display all attack choices
+                DisplayAttacks();
                 attackPokemonChoice = Console.ReadLine();
+                int secondAttackChoice = int.Parse(attackPokemonChoice);
 
+                pokemonArray[indexFirstPokemon].pokemonAbilities[mainAttackChoice].Activate(pokemonArray[indexFirstPokemon], pokemonArray[indexSecondPokemon]);
+                
                 Console.WriteLine("Play Again?");
                 playAgain = Console.ReadLine();
             }

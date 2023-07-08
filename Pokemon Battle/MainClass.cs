@@ -168,34 +168,6 @@ namespace Pokemon_Battle
             this.pokemonAbilities = pokemonAbilities;
         }
 
-        public Pokemon[] PokemonList()
-        {
-            Pokemon[] pokemonArray = new Pokemon[10];
-
-            pokemonArray[0] = new Pokemon("Mew", 300, new Heal(50), new Lightning(75), new Dodge());
-
-            pokemonArray[1] = new Pokemon("Goomy", 300, new Lightning(75), new Poison(), new Dodge());
-
-            pokemonArray[2] = new Pokemon("Paras", 300, new Heal(50), new Lightning(100), new Dodge());
-
-            pokemonArray[3] = new Pokemon("Skitty", 300);
-
-            pokemonArray[4] = new Pokemon("Pikachu", 300);
-
-            pokemonArray[5] = new Pokemon("Lechonk", 300);
-
-            pokemonArray[6] = new Pokemon("Breloom", 300);
-
-            pokemonArray[7] = new Pokemon("Grookey", 300);
-
-            pokemonArray[8] = new Pokemon("Salandit", 300);
-
-            pokemonArray[9] = new Pokemon("Tranquil", 300);
-
-            pokemonArray[10] = new Pokemon("JigglyPuff", 300);
-
-            return pokemonArray;
-        }
     }
 
     internal class Trainer
