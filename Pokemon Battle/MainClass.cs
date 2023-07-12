@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
+using System.Xml.XPath;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace Pokemon_Battle
@@ -34,6 +36,11 @@ namespace Pokemon_Battle
 
             active = false;
         }
+
+        public override string Print()
+        {
+            return "Heal";
+        }
     }
 
     internal class Poison : Ability
@@ -58,6 +65,11 @@ namespace Pokemon_Battle
 
             active = false;
         }
+
+        public override string Print()
+        {
+            return "Poison";
+        }
     }
 
     internal class Dodge : Ability
@@ -80,6 +92,11 @@ namespace Pokemon_Battle
 
             return damage;
         }
+
+        public override string Print()
+        {
+            return "Dodge";
+        }
     }
 
     internal class Lightning : Ability
@@ -95,6 +112,11 @@ namespace Pokemon_Battle
         {
             enemy.Damage(activator, damage);            
         }
+
+        public override string Print()
+        {
+            return "Lightning";
+        }
     }
 
     internal class Stun : Ability
@@ -108,6 +130,11 @@ namespace Pokemon_Battle
         {
             enemy.IsStunned = false;
         }
+
+        public override string Print()
+        {
+            return "Stun";
+        }
     }
 
     internal abstract class Ability
@@ -115,6 +142,7 @@ namespace Pokemon_Battle
         public abstract void Activate(Pokemon activator, Pokemon enemy);
         public virtual void Update(Pokemon activator, Pokemon enemy) { }
         public virtual int ModifyDamage(int damage, Pokemon activator, Pokemon enemy) { return damage; }
+        public abstract string Print();
     }
 
     internal class Pokemon
@@ -168,6 +196,18 @@ namespace Pokemon_Battle
             this.pokemonAbilities = pokemonAbilities;
         }
 
+        public string printPokemon()
+        {
+            string result = $"Name: {name}, Health: {health}, ";
+
+            for (int i = 0; i < pokemonAbilities.Length; i++)
+            {
+                result += pokemonAbilities[i].Print();
+                result += ", ";
+            }
+
+            return result;
+        }
     }
 
     internal class Trainer
@@ -187,6 +227,11 @@ namespace Pokemon_Battle
                 {
                     Console.WriteLine("Player Has Fled.");
                 }
+            }
+
+            public override string Print()
+            {
+                return "Flee";
             }
         }
 

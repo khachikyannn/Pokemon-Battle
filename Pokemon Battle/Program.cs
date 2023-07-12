@@ -27,23 +27,30 @@ namespace Pokemon_Battle
             pokemonArray[9] = new Pokemon("Tranquil", 300);
 
             pokemonArray[10] = new Pokemon("JigglyPuff", 300);
-
         }
+        public static Pokemon[] pokemonArray = new Pokemon[11];
 
-        public static Ability[] attacks;
-
-        public static int DisplayPokemon()
+        public static int getPokemonChoice(Pokemon[] pokemonArray, string pokemonChoice)
         {
             int pickedPokemon = 0;
 
             for (int i = 0; i < pokemonArray.Length; i++)
             {
-                Console.WriteLine($"Available Pokemon: {pokemonArray[i]}.");
-
-                pickedPokemon = i;
+                if (pokemonChoice == pokemonArray[i].ToString())
+                {
+                    pickedPokemon = i;
+                }
             }
 
             return pickedPokemon;
+        }
+
+        public static void printPokemons(Pokemon[] pokemonArray)
+        {
+            for (int i = 0; i < pokemonArray.Length; i++)
+            {
+                Console.WriteLine(pokemonArray[i].printPokemon());
+            }
         }
 
         public static void DisplayAttacks()
@@ -53,15 +60,16 @@ namespace Pokemon_Battle
                 Console.WriteLine($"Available Attacks: {attacks}");
             }
         }
-
-        public static Pokemon[] pokemonArray = new Pokemon[30];
+        public static Ability[] attacks;
 
         static void Main()
-        { 
-            string playAgain = "";
+        {
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+
+            string playAgain = "yes";
 
             MakePokemons();
-            
+
             Pokemon[] PokemonTrainers;
 
             //Each "player" gets a pokemon (store that pokemon)
@@ -71,13 +79,29 @@ namespace Pokemon_Battle
 
             while (playAgain == "yes")
             {
+
+
                 Console.WriteLine("Pick Your First Pokemon");
-                int indexFirstPokemon = DisplayPokemon();
+                printPokemons(pokemonArray);
                 string firstPokemonChoice = Console.ReadLine();
+                int indexFirstPokemon = getPokemonChoice(pokemonArray, firstPokemonChoice);
+                int firstPickedPokemon = int.Parse(firstPokemonChoice);
+                if (firstPickedPokemon == indexFirstPokemon)
+                {
+                    Console.WriteLine($"Final First Pokemon: {pokemonArray[firstPickedPokemon]}");
+                }
+
 
                 Console.WriteLine("Pick Your Second Pokemon");
-                int indexSecondPokemon = DisplayPokemon();
+                printPokemons(pokemonArray);
                 string secondPokemonChoice = Console.ReadLine();
+                int indexSecondPokemon = getPokemonChoice(pokemonArray, secondPokemonChoice);
+                int secondPickedPokemon = int.Parse(secondPokemonChoice);
+                if (secondPickedPokemon == indexSecondPokemon)
+                {
+                    Console.WriteLine($"Final Second Pokemon: {pokemonArray[secondPickedPokemon]}");
+                }
+
 
                 Console.WriteLine("Pick Your Type Of Attack For First Pokemon");
                 DisplayAttacks();
@@ -90,7 +114,7 @@ namespace Pokemon_Battle
                 int secondAttackChoice = int.Parse(attackPokemonChoice);
 
                 pokemonArray[indexFirstPokemon].pokemonAbilities[mainAttackChoice].Activate(pokemonArray[indexFirstPokemon], pokemonArray[indexSecondPokemon]);
-                
+
                 Console.WriteLine("Play Again?");
                 playAgain = Console.ReadLine();
             }
