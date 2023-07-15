@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography.X509Certificates;
 
+
 namespace Pokemon_Battle
 {
     internal class Program
@@ -12,21 +13,21 @@ namespace Pokemon_Battle
 
             pokemonArray[2] = new Pokemon("Paras", 300, new Heal(50), new Lightning(100), new Dodge());
 
-            pokemonArray[3] = new Pokemon("Skitty", 300);
+            pokemonArray[3] = new Pokemon("Skitty", 300, new Heal(50), new Stun(), new Lightning(75));
 
-            pokemonArray[4] = new Pokemon("Pikachu", 300);
+            pokemonArray[4] = new Pokemon("Pikachu", 500, new Heal(100), new Stun(), new Lightning(100), new Poison(), new Dodge());
 
-            pokemonArray[5] = new Pokemon("Lechonk", 300);
+            pokemonArray[5] = new Pokemon("Lechonk", 500, new Heal(100), new Stun(), new Lightning(85), new Poison(), new Dodge());
 
-            pokemonArray[6] = new Pokemon("Breloom", 300);
+            pokemonArray[6] = new Pokemon("Breloom", 300, new Stun(), new Heal(50), new Lightning(50));
 
-            pokemonArray[7] = new Pokemon("Grookey", 300);
+            pokemonArray[7] = new Pokemon("Grookey", 300, new Heal(75), new Poison(), new Dodge());
 
-            pokemonArray[8] = new Pokemon("Salandit", 300);
+            pokemonArray[8] = new Pokemon("Salandit", 300, new Lightning(100), new Stun(), new Dodge());
 
-            pokemonArray[9] = new Pokemon("Tranquil", 300);
+            pokemonArray[9] = new Pokemon("Tranquil", 500, new Heal(50), new Stun(), new Lightning(125), new Poison(), new Dodge());
 
-            pokemonArray[10] = new Pokemon("JigglyPuff", 300);
+            pokemonArray[10] = new Pokemon("JigglyPuff", 300, new Lightning(100));
         }
         public static Pokemon[] pokemonArray = new Pokemon[11];
 
@@ -36,12 +37,19 @@ namespace Pokemon_Battle
 
             for (int i = 0; i < pokemonArray.Length; i++)
             {
-                if (pokemonChoice == pokemonArray[i].ToString())
+                if (pokemonChoice == pokemonArray[i].Name)
                 {
                     pickedPokemon = i;
+
+                    return pickedPokemon;
+                }
+                else
+                {
+                    Console.WriteLine("Pick Valid Option.");
+                    pokemonChoice = Console.ReadLine();
                 }
             }
-
+                                ////////////////////////////////////////////////////FIX NOT RECOGNIZING NAMES
             return pickedPokemon;
         }
 
@@ -53,24 +61,24 @@ namespace Pokemon_Battle
             }
         }
 
-        public static void DisplayAttacks()
+        public static void DisplayAttacks(Pokemon[] pokemonAttacks)
         {
             for(int i = 0; i < pokemonArray.Length; i++)
             {
-                Console.WriteLine($"Available Attacks: {attacks}");
+                Console.WriteLine($"Available Attacks: {pokemonAttacks[i].printPokemonAbilities()}");
             }
         }
-        public static Ability[] attacks;
-
+       
         static void Main()
         {
+          
             Console.ForegroundColor = ConsoleColor.DarkYellow;
 
             string playAgain = "yes";
 
             MakePokemons();
 
-            Pokemon[] PokemonTrainers;
+            Trainer[] PokemonTrainers;
 
             //Each "player" gets a pokemon (store that pokemon)
             //Print out the abilities they have
@@ -79,37 +87,45 @@ namespace Pokemon_Battle
 
             while (playAgain == "yes")
             {
-
+                Console.WriteLine("<------------------------------------------->");
 
                 Console.WriteLine("Pick Your First Pokemon");
                 printPokemons(pokemonArray);
                 string firstPokemonChoice = Console.ReadLine();
                 int indexFirstPokemon = getPokemonChoice(pokemonArray, firstPokemonChoice);
-                int firstPickedPokemon = int.Parse(firstPokemonChoice);
-                if (firstPickedPokemon == indexFirstPokemon)
-                {
-                    Console.WriteLine($"Final First Pokemon: {pokemonArray[firstPickedPokemon]}");
-                }
+
+                //do
+                //{
+                //    Console.WriteLine("Pick Valid Pokemon");
+                //    firstPokemonChoice = Console.ReadLine();
+                //}
+                //while (firstPokemonChoice != indexFirstPokemon.ToString());
 
 
                 Console.WriteLine("Pick Your Second Pokemon");
                 printPokemons(pokemonArray);
                 string secondPokemonChoice = Console.ReadLine();
                 int indexSecondPokemon = getPokemonChoice(pokemonArray, secondPokemonChoice);
-                int secondPickedPokemon = int.Parse(secondPokemonChoice);
-                if (secondPickedPokemon == indexSecondPokemon)
-                {
-                    Console.WriteLine($"Final Second Pokemon: {pokemonArray[secondPickedPokemon]}");
-                }
+
+                //do
+                //{
+                //    Console.WriteLine("Pick Valid Pokemon");
+                //    secondPokemonChoice = Console.ReadLine();
+                //}
+                //while (secondPokemonChoice != indexSecondPokemon.ToString());
 
 
                 Console.WriteLine("Pick Your Type Of Attack For First Pokemon");
-                DisplayAttacks();
+
+                DisplayAttacks(pokemonArray);
+
                 string attackPokemonChoice = Console.ReadLine();
+
                 int mainAttackChoice = int.Parse(attackPokemonChoice);
 
+
                 Console.WriteLine("Pick Your Type Of Attack For Second Pokemon");
-                DisplayAttacks();
+                DisplayAttacks(pokemonArray);
                 attackPokemonChoice = Console.ReadLine();
                 int secondAttackChoice = int.Parse(attackPokemonChoice);
 

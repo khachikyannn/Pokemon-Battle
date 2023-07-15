@@ -208,6 +208,19 @@ namespace Pokemon_Battle
 
             return result;
         }
+
+        public string printPokemonAbilities()
+        {
+            string result = $"";
+
+             for (int i = 0; i < pokemonAbilities.Length; i++)
+            {
+                result += pokemonAbilities[i].Print();
+                result += ", ";
+            }
+
+            return result;
+        }
     }
 
     internal class Trainer
