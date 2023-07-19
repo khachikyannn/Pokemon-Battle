@@ -196,7 +196,7 @@ namespace Pokemon_Battle
             this.pokemonAbilities = pokemonAbilities;
         }
 
-        public string printPokemon()
+        public string PrintPokemon()
         {
             string result = $"Name: {name}, Health: {health}, ";
 
@@ -206,19 +206,21 @@ namespace Pokemon_Battle
                 result += ", ";
             }
 
+            result = result.Remove(result.Length - 2);
+
             return result;
         }
 
-        public string printPokemonAbilities()
+        public string PrintPokemonAbilities()
         {
             string result = $"";
-
-             for (int i = 0; i < pokemonAbilities.Length; i++)
+           
+            for(int i = 0; i < pokemonAbilities.Length; i++)
             {
                 result += pokemonAbilities[i].Print();
                 result += ", ";
             }
-
+            result = result.Remove(result.Length - 2);
             return result;
         }
     }
