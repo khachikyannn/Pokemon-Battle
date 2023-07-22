@@ -6,7 +6,7 @@ namespace Pokemon_Battle
     internal class Program
     {
         static void MakePokemons()
-        { 
+        {
             pokemonArray[0] = new Pokemon("JigglyPuff", 300, new Lightning(100));
 
             pokemonArray[1] = new Pokemon("Grookey", 300, new Heal(75), new Poison(), new Dodge());
@@ -27,7 +27,7 @@ namespace Pokemon_Battle
 
             pokemonArray[9] = new Pokemon("Pikachu", 500, new Heal(100), new Stun(), new Lightning(100), new Poison(), new Dodge());
 
-            pokemonArray[10] = new Pokemon("Tranquil", 500, new Heal(50), new Stun(), new Lightning(125), new Poison(), new Dodge());   
+            pokemonArray[10] = new Pokemon("Tranquil", 500, new Heal(50), new Stun(), new Lightning(125), new Poison(), new Dodge());
         }
         public static Pokemon[] pokemonArray = new Pokemon[11];
 
@@ -48,7 +48,7 @@ namespace Pokemon_Battle
                 }
                 Console.WriteLine("Retry");
                 pokemonChoice = Console.ReadLine();
-            }               
+            }
         }
 
         public static void PrintPokemons(Pokemon[] pokemonArray)
@@ -63,7 +63,22 @@ namespace Pokemon_Battle
         {
             Console.WriteLine($"Available Attacks: {pokemonAttacks[indexOfPokemon].PrintPokemonAbilities()}");
         }
-       
+
+        public static int CheckAttacks(Pokemon[] pokemonAttacks, int indexOfPokemon)
+        {
+            while (true)
+            {
+                DisplayAttacks(pokemonArray, indexOfPokemon);
+                string attackPokemonChoice = Console.ReadLine();
+                int index = pokemonAttacks[indexOfPokemon].CheckPokemonAbilities(attackPokemonChoice);
+
+                if (index != -1)
+                {
+                    return index;
+                }
+            }
+        }
+        
         static void Main()
         {
             Console.ForegroundColor = ConsoleColor.DarkYellow;
@@ -71,8 +86,6 @@ namespace Pokemon_Battle
             string playAgain = "yes";
 
             MakePokemons();
-
-            Trainer[] PokemonTrainers;
 
             while (playAgain == "yes")
             {
@@ -95,60 +108,20 @@ namespace Pokemon_Battle
                 while (pokemonArray[indexFirstPokemon].Health != 0 || pokemonArray[indexSecondPokemon].Health != 0)
                 {
                     Console.WriteLine("Pick Your Type Of Attack For First Pokemon");
-                    DisplayAttacks(pokemonArray, indexFirstPokemon);
-                    string attackPokemonChoice = Console.ReadLine();
-                    if(attackPokemonChoice == "Heal")
-                    {
-                        indexFirstPokemon = 0;
-                    }
-                    else if(attackPokemonChoice == "Lightning")
-                    {
-                        indexFirstPokemon = 1;
-                    }
-                    else if(attackPokemonChoice == "Dodge")
-                    {
-                        indexFirstPokemon = 2;
-                    }
-                    else if(attackPokemonChoice == "Poison")
-                    {
-                        indexFirstPokemon = 3;
-                    }
-                    else if(attackPokemonChoice == "Stun")
-                    {
-                        indexFirstPokemon = 4;
-                    }
+
+                    int ability1Index = CheckAttacks(); /////////////////////////////////////////////FIX
 
                     Console.WriteLine("----------");
 
                     Console.WriteLine("Pick Your Type Of Attack For Second Pokemon");
-                    DisplayAttacks(pokemonArray, indexSecondPokemon);
-                    attackPokemonChoice = Console.ReadLine();
-                    if (attackPokemonChoice == "Heal")
-                    {
-                        indexSecondPokemon = 0;
-                    }
-                    else if (attackPokemonChoice == "Lightning")
-                    {
-                        indexSecondPokemon = 1;
-                    }
-                    else if (attackPokemonChoice == "Dodge")
-                    {
-                        indexSecondPokemon = 2;
-                    }
-                    else if (attackPokemonChoice == "Poison")
-                    {
-                        indexSecondPokemon = 3;
-                    }
-                    else if (attackPokemonChoice == "Stun")
-                    {
-                        indexSecondPokemon = 4;
-                    }
+
+                    int ability2Index = CheckAttacks();
 
                     Console.WriteLine("----------");
 
-                    pokemonArray[indexFirstPokemon].pokemonAbilities[indexFirstPokemon].Activate(pokemonArray[indexFirstPokemon], pokemonArray[indexSecondPokemon]);
+                    pokemonArray[indexFirstPokemon].pokemonAbilities[ability1Index].Activate(pokemonArray[indexFirstPokemon], pokemonArray[indexSecondPokemon]);
 
-                    pokemonArray[indexSecondPokemon].pokemonAbilities[indexSecondPokemon].Activate(pokemonArray[indexSecondPokemon], pokemonArray[indexFirstPokemon]);
+                    pokemonArray[indexSecondPokemon].pokemonAbilities[ability2Index].Activate(pokemonArray[indexSecondPokemon], pokemonArray[indexFirstPokemon]);
 
                     Console.WriteLine($"Player 1 Health: {pokemonArray[indexFirstPokemon].Health}");
 
@@ -157,10 +130,20 @@ namespace Pokemon_Battle
                     Console.WriteLine("----------");
                 }
 
-                ///////////////////////////////////ADD END SCREEN
+                if (pokemonArray[indexFirstPokemon].Health <= 0)
+                {
+                    Console.WriteLine("Player 2 Has Won Game.");
 
-                Console.WriteLine("Play Again?");
-                playAgain = Console.ReadLine();
+                    Console.WriteLine("Play Again?");
+                    playAgain = Console.ReadLine();
+                }
+                else if (pokemonArray[indexSecondPokemon].Health <= 0)
+                {
+                    Console.WriteLine("Player 1 Has Won Game.");
+
+                    Console.WriteLine("Play Again?");
+                    playAgain = Console.ReadLine();
+                }
             }
         }
     }

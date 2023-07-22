@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
@@ -17,6 +18,7 @@ namespace Pokemon_Battle
 
         private int heal;
 
+        public override string Name => "Heal";
         public Heal(int heal)
         {
             this.heal = heal;
@@ -49,6 +51,7 @@ namespace Pokemon_Battle
         private int poisonDamage;
         int count = 0;
 
+        public override string Name => "Poison";
         public override void Activate(Pokemon activator, Pokemon enemy)
         {
             active = true;
@@ -75,7 +78,7 @@ namespace Pokemon_Battle
     internal class Dodge : Ability
     {
         bool active;
-
+        public override string Name => "Dodge";
         public override void Activate(Pokemon activator, Pokemon enemy)
         {
             active = true;
@@ -103,6 +106,8 @@ namespace Pokemon_Battle
     {
         int damage;
 
+        public override string Name => "Lightning";
+
         public Lightning(int damage)
         {
             this.damage = damage;
@@ -120,7 +125,8 @@ namespace Pokemon_Battle
     }
 
     internal class Stun : Ability
-    { 
+    {
+        public override string Name => "Stun";
         public override void Activate(Pokemon activator, Pokemon enemy)
         {
             enemy.IsStunned = true;
@@ -137,8 +143,20 @@ namespace Pokemon_Battle
         }
     }
 
+    //internal class Abilities : Ability
+    //{
+        
+    //    public override void Activate(Pokemon activator, Pokemon enemy)
+    //    {
+                 
+    //    }
+
+
+    //}
+
     internal abstract class Ability
     {
+        public abstract string Name { get; }
         public abstract void Activate(Pokemon activator, Pokemon enemy);
         public virtual void Update(Pokemon activator, Pokemon enemy) { }
         public virtual int ModifyDamage(int damage, Pokemon activator, Pokemon enemy) { return damage; }
@@ -182,7 +200,6 @@ namespace Pokemon_Battle
             set
             {
                 if (value < 0) Console.WriteLine("Pokemon Has Fainted.");
-                if (value > 500) Console.WriteLine("Pokemon Is Too Tanky.");
                 health = value;
             }
         }
@@ -223,38 +240,51 @@ namespace Pokemon_Battle
             result = result.Remove(result.Length - 2);
             return result;
         }
-    }
 
-    internal class Trainer
-    {
-        internal class Flee : Ability
+        public int CheckPokemonAbilities(string choice)
         {
-            bool leaveGame;
-
-            public override void Activate(Pokemon activator, Pokemon enemy)
+            for(int i = 0; i < pokemonAbilities.Length; i++)
             {
-                leaveGame = true;
-            }
-
-            public override void Update(Pokemon activator, Pokemon enemy)
-            {
-                if (leaveGame)
+                if (choice == pokemonAbilities[i].Name)
                 {
-                    Console.WriteLine("Player Has Fled.");
+                    return i;
                 }
             }
 
-            public override string Print()
-            {
-                return "Flee";
-            }
-        }
-
-        private Pokemon[] allPokemon;
-
-        public Trainer(Pokemon[] allPokemon)
-        {
-            this.allPokemon = allPokemon;
+            return -1;
         }
     }
+
+    //internal class Trainer
+    //{
+    //    internal class Flee : Ability
+    //    {
+    //        bool leaveGame;
+
+    //        public override void Activate(Pokemon activator, Pokemon enemy)
+    //        {
+    //            leaveGame = true;
+    //        }
+
+    //        public override void Update(Pokemon activator, Pokemon enemy)
+    //        {
+    //            if (leaveGame)
+    //            {
+    //                Console.WriteLine("Player Has Fled.");
+    //            }
+    //        }
+
+    //        public override string Print()
+    //        {
+    //            return "Flee";
+    //        }
+    //    }
+
+    //    private Pokemon[] allPokemon;
+
+    //    public Trainer(Pokemon[] allPokemon)
+    //    {
+    //        this.allPokemon = allPokemon;
+    //    }
+    //}
 }
