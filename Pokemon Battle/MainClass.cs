@@ -13,9 +13,7 @@ using static System.Net.Mime.MediaTypeNames;
 namespace Pokemon_Battle
 {
     internal class Heal : Ability
-    {
-        bool active; 
-
+    { 
         private int heal;
 
         public override string Name => "Heal";
@@ -26,17 +24,7 @@ namespace Pokemon_Battle
 
         public override void Activate(Pokemon activator, Pokemon enemy)
         {
-            active = true;
-        }
-
-        public override void Update(Pokemon activator, Pokemon enemy)
-        {
-            if (active)
-            {
-                activator.Health += heal;
-            }
-
-            active = false;
+            activator.Health += heal;
         }
 
         public override string Print()
@@ -47,26 +35,22 @@ namespace Pokemon_Battle
 
     internal class Poison : Ability
     {
-        bool active;
-        private int poisonDamage;
-        int count = 0;
+        int count = 3;
 
         public override string Name => "Poison";
-        public override void Activate(Pokemon activator, Pokemon enemy)
+        public override void Activate(Pokemon activator, Pokemon enemy) ////////////////////////////FIX POISION NOT WORKING
         {
-            active = true;
+            count = 0;
         }
 
         public override void Update(Pokemon activator, Pokemon enemy)
         {
-            if (active && count < 3)
+            if (count < 3)
             {
                 enemy.Health = enemy.Health - 30;
             }
 
             count++;
-
-            active = false;
         }
 
         public override string Print()
@@ -132,9 +116,16 @@ namespace Pokemon_Battle
             enemy.IsStunned = true;
         }
 
-        public override void Update(Pokemon activator, Pokemon enemy)
+        public override int ModifyDamage(int damage, Pokemon activator, Pokemon enemy)
         {
+            if (enemy.IsStunned == true)
+            {
+                damage = 0;
+            }
+
             enemy.IsStunned = false;
+
+            return damage;
         }
 
         public override string Print()
@@ -142,17 +133,6 @@ namespace Pokemon_Battle
             return "Stun";
         }
     }
-
-    //internal class Abilities : Ability
-    //{
-        
-    //    public override void Activate(Pokemon activator, Pokemon enemy)
-    //    {
-                 
-    //    }
-
-
-    //}
 
     internal abstract class Ability
     {
@@ -253,38 +233,17 @@ namespace Pokemon_Battle
 
             return -1;
         }
+
+        public void UpdateAbilities(Pokemon enemy)
+        {
+            for (int i = 0; i < pokemonAbilities.Length; i++)
+            {
+                pokemonAbilities[i].Update(this, enemy);
+            }
+
+            //pokemonAbilities[0].Update(activator, enemy);
+
+            //pokemonAbilities[1].Update(activator, enemy);
+        }
     }
-
-    //internal class Trainer
-    //{
-    //    internal class Flee : Ability
-    //    {
-    //        bool leaveGame;
-
-    //        public override void Activate(Pokemon activator, Pokemon enemy)
-    //        {
-    //            leaveGame = true;
-    //        }
-
-    //        public override void Update(Pokemon activator, Pokemon enemy)
-    //        {
-    //            if (leaveGame)
-    //            {
-    //                Console.WriteLine("Player Has Fled.");
-    //            }
-    //        }
-
-    //        public override string Print()
-    //        {
-    //            return "Flee";
-    //        }
-    //    }
-
-    //    private Pokemon[] allPokemon;
-
-    //    public Trainer(Pokemon[] allPokemon)
-    //    {
-    //        this.allPokemon = allPokemon;
-    //    }
-    //}
 }

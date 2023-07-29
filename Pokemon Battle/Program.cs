@@ -7,21 +7,21 @@ namespace Pokemon_Battle
     {
         static void MakePokemons()
         {
-            pokemonArray[0] = new Pokemon("JigglyPuff", 300, new Lightning(100));
+            pokemonArray[0] = new Pokemon("Mew", 300, new Heal(50), new Lightning(75), new Dodge(), new Stun());
 
-            pokemonArray[1] = new Pokemon("Grookey", 300, new Heal(75), new Poison(), new Dodge());
+            pokemonArray[1] = new Pokemon("Breloom", 300, new Stun(), new Heal(50), new Lightning(50), new Dodge());
 
-            pokemonArray[2] = new Pokemon("Mew", 300, new Heal(50), new Lightning(75), new Dodge());
+            pokemonArray[2] = new Pokemon("Skitty", 300, new Heal(50), new Stun(), new Lightning(75), new Poison());
 
-            pokemonArray[3] = new Pokemon("Skitty", 300, new Heal(50), new Stun(), new Lightning(75));
+            pokemonArray[3] = new Pokemon("Goomy", 300, new Lightning(75), new Poison(), new Dodge(), new Heal(100));
 
-            pokemonArray[4] = new Pokemon("Goomy", 300, new Lightning(75), new Poison(), new Dodge());
+            pokemonArray[4] = new Pokemon("Paras", 300, new Heal(50), new Lightning(100), new Dodge(), new Poison());
 
-            pokemonArray[5] = new Pokemon("Paras", 300, new Heal(50), new Lightning(100), new Dodge());
+            pokemonArray[5] = new Pokemon("Salandit", 300, new Lightning(100), new Stun(), new Dodge(), new Heal(50));
 
-            pokemonArray[6] = new Pokemon("Breloom", 300, new Stun(), new Heal(50), new Lightning(50));
+            pokemonArray[6] = new Pokemon("Grookey", 300, new Heal(75), new Poison(), new Dodge(), new Lightning(100));
 
-            pokemonArray[7] = new Pokemon("Salandit", 300, new Lightning(100), new Stun(), new Dodge());
+            pokemonArray[7] = new Pokemon("JigglyPuff", 300, new Lightning(100), new Heal(100), new Dodge(), new Stun());
 
             pokemonArray[8] = new Pokemon("Lechonk", 500, new Heal(100), new Stun(), new Lightning(85), new Poison(), new Dodge());
 
@@ -95,6 +95,8 @@ namespace Pokemon_Battle
                 PrintPokemons(pokemonArray);
                 string firstPokemonChoice = Console.ReadLine();
                 int indexFirstPokemon = GetPokemonChoice(pokemonArray, firstPokemonChoice);
+                Pokemon firstPokemon = pokemonArray[indexFirstPokemon];
+                int healthOfFirstPokemon = firstPokemon.Health;
 
                 Console.WriteLine("----------");
 
@@ -102,47 +104,59 @@ namespace Pokemon_Battle
                 PrintPokemons(pokemonArray);
                 string secondPokemonChoice = Console.ReadLine();
                 int indexSecondPokemon = GetPokemonChoice(pokemonArray, secondPokemonChoice);
+                Pokemon secondPokemon = pokemonArray[indexSecondPokemon];
+                int healthOfSecondPokemon = secondPokemon.Health;
 
                 Console.WriteLine("----------");
 
-                while (pokemonArray[indexFirstPokemon].Health != 0 || pokemonArray[indexSecondPokemon].Health != 0)
+                while (firstPokemon.Health >= 0 && secondPokemon.Health >= 0)
                 {
                     Console.WriteLine("Pick Your Type Of Attack For First Pokemon");
 
-                    int ability1Index = CheckAttacks(); /////////////////////////////////////////////FIX
+                    int ability1Index = CheckAttacks(pokemonArray, indexFirstPokemon);
+
+                    firstPokemon.UpdateAbilities(secondPokemon);
 
                     Console.WriteLine("----------");
 
                     Console.WriteLine("Pick Your Type Of Attack For Second Pokemon");
 
-                    int ability2Index = CheckAttacks();
+                    int ability2Index = CheckAttacks(pokemonArray, indexSecondPokemon);
+
+                    secondPokemon.UpdateAbilities(firstPokemon);
 
                     Console.WriteLine("----------");
 
-                    pokemonArray[indexFirstPokemon].pokemonAbilities[ability1Index].Activate(pokemonArray[indexFirstPokemon], pokemonArray[indexSecondPokemon]);
+                    firstPokemon.pokemonAbilities[ability1Index].Activate(firstPokemon, secondPokemon);
 
-                    pokemonArray[indexSecondPokemon].pokemonAbilities[ability2Index].Activate(pokemonArray[indexSecondPokemon], pokemonArray[indexFirstPokemon]);
+                    secondPokemon.pokemonAbilities[ability2Index].Activate(secondPokemon, firstPokemon);
 
-                    Console.WriteLine($"Player 1 Health: {pokemonArray[indexFirstPokemon].Health}");
+                    Console.WriteLine($"Player 1 Health: {firstPokemon.Health}");
 
-                    Console.WriteLine($"Player 2 Health: {pokemonArray[indexSecondPokemon].Health}");
+                    Console.WriteLine($"Player 2 Health: {secondPokemon.Health}");
 
                     Console.WriteLine("----------");
                 }
 
-                if (pokemonArray[indexFirstPokemon].Health <= 0)
+                if (firstPokemon.Health <= 0)
                 {
-                    Console.WriteLine("Player 2 Has Won Game.");
+                    Console.WriteLine($"Player 2 Has Won Game With {secondPokemon.Health} Health.");
 
                     Console.WriteLine("Play Again?");
                     playAgain = Console.ReadLine();
                 }
-                else if (pokemonArray[indexSecondPokemon].Health <= 0)
+                else if (secondPokemon.Health <= 0)
                 {
-                    Console.WriteLine("Player 1 Has Won Game.");
+                    Console.WriteLine($"Player 1 Has Won Game With {firstPokemon.Health} Health.");
 
                     Console.WriteLine("Play Again?");
                     playAgain = Console.ReadLine();
+                }
+
+                if(playAgain == "yes")
+                {
+                    firstPokemon.Health = healthOfFirstPokemon;
+                    secondPokemon.Health = healthOfSecondPokemon;
                 }
             }
         }
