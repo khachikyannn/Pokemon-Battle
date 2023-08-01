@@ -38,7 +38,8 @@ namespace Pokemon_Battle
         int count = 3;
 
         public override string Name => "Poison";
-        public override void Activate(Pokemon activator, Pokemon enemy) ////////////////////////////FIX POISION NOT WORKING
+
+        public override void Activate(Pokemon activator, Pokemon enemy) 
         {
             count = 0;
         }
@@ -62,7 +63,9 @@ namespace Pokemon_Battle
     internal class Dodge : Ability
     {
         bool active;
+
         public override string Name => "Dodge";
+
         public override void Activate(Pokemon activator, Pokemon enemy)
         {
             active = true;
@@ -210,6 +213,11 @@ namespace Pokemon_Battle
 
         public string PrintPokemonAbilities()
         {
+            //List
+            List<int> yeet = new List<int>();
+            yeet.Add(2);
+            yeet[0] = 5;
+
             string result = $"";
            
             for(int i = 0; i < pokemonAbilities.Length; i++)
@@ -219,6 +227,7 @@ namespace Pokemon_Battle
             }
             result = result.Remove(result.Length - 2);
             return result;
+
         }
 
         public int CheckPokemonAbilities(string choice)
@@ -240,10 +249,6 @@ namespace Pokemon_Battle
             {
                 pokemonAbilities[i].Update(this, enemy);
             }
-
-            //pokemonAbilities[0].Update(activator, enemy);
-
-            //pokemonAbilities[1].Update(activator, enemy);
         }
     }
 }

@@ -109,7 +109,7 @@ namespace Pokemon_Battle
 
                 Console.WriteLine("----------");
 
-                while (firstPokemon.Health >= 0 && secondPokemon.Health >= 0)
+                while (firstPokemon.Health > 0 && secondPokemon.Health > 0)
                 {
                     Console.WriteLine("Pick Your Type Of Attack For First Pokemon");
 
